@@ -1,0 +1,49 @@
+{
+    "name": "process_ui_navigation",
+    "description": "Process UI screen navigation and actions",
+    "parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "screen": {
+            "type": "string",
+            "description": "The name of the UI screen e.g. 'Log in screen', 'Home Screen'"
+          },
+          "action": {
+            "type": "string",
+            "description": "The action to be taken on the screen e.g. 'Go back', 'settings screen'"
+          }
+        },
+        "required": ["screen", "action"]
+      }
+    }
+  }
+
+  {
+    "name": "process_ui_navigation",
+    "description": "Process UI screen navigation and actions",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "actionArray": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "screen": {
+                        "type": "string",
+                        "description": "The name of the UI screen e.g. 'Log in screen', 'Home Screen'"
+                    },
+                    "action": {
+                        "type": "string",
+                        "description": "The action to be taken on the screen e.g. 'Go back', 'settings screen'"
+                    }
+                }
+            },
+        "required": ["screen", "action"]
+        }
+      }
+    }
+  }
+  

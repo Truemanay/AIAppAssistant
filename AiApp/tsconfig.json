@@ -1,0 +1,76 @@
+{
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js",
+    "src/components/generated",
+    "src/components/impComponents",
+    "backend/src/types/types.validator.ts",
+    "src/__mocks__",
+    "./custom"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "ES6",
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "module": "ESNext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ESNext"
+    ],
+    "allowJs": true,
+    "jsx": "react-native",
+    "noEmit": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "src/custom-typings",
+      "node_modules/@types"
+    ],
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS",
+      "moduleResolution": "node"
+    }
+  },
+  "paths": {
+    "*": [
+      "./custom.d.ts"
+    ]
+  },
+  "include": [
+    "src",
+    "jestSetup",
+    ".",
+    ".eslintrc.js",
+    "types/",
+    "./react-native.config.js",
+    "src/index.ts",
+    "i18n.config.ts"
+  ],
+  "extends": "expo/tsconfig.base"
+}

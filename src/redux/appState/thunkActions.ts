@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { tThunkDispatch } from "../types";
 import _ from "lodash";
-import { _animateFuzzy, _callFunction } from "../../functions";
+import { _animateFuzzy, _callFunction, AssistantClient } from "../../functions";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const submitData = async (data: any, dispatch: any): Promise<string | undefined> => {
@@ -53,4 +53,16 @@ export const aNav = (myScreen: string): tThunkDispatch => {
     dispatch({ rCurrentScreen: screenName, type: "SET_APP_STATE" });
     router.push(myScreen);
   };
+};
+
+export const submitDataTest = async (data: any, dispatch: any): Promise<string | undefined> => {
+  console.log("Data being sent12: ", JSON.stringify(data));
+  try {
+    const fuzzy = new AssistantClient("asst_wBJVX5tBztDMg1mGEssYLyow", "sk-l");
+    const hello = await fuzzy.call("Hello");
+    return hello;
+  } catch (error) {
+    console.error("Error submitting data:", error);
+    return undefined;
+  }
 };

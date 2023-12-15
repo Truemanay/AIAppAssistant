@@ -6,7 +6,6 @@ import { tThunkDispatch } from "./redux/types";
 import { OpenAI } from "openai"; // Assuming similar module structure in TypeScript
 import { Run } from "openai/resources/beta/threads/runs/runs";
 import { Thread } from "openai/resources/beta/threads/threads";
-import { Messages } from "openai/resources/beta/threads/messages/messages";
 import { tAppState } from "./redux/appState/types";
 
 export const fetchData = async (): Promise<string | undefined> => {
@@ -104,7 +103,7 @@ export const _callFunction = async (myPath: Array<{ screen: string; action: stri
   }
 };
 
-const executeAction = (state: tAppState, screen: string, action: string): string => {
+export const executeAction = (state: tAppState, screen: string, action: string): string => {
   const invalidAction = (currentScreen: string, currentAction: string): string => {
     return `Invalid action ${currentAction} for screen ${currentScreen}`;
   };
@@ -151,8 +150,8 @@ const executeAction = (state: tAppState, screen: string, action: string): string
 };
 
 type ToolResponse = {
-  toolCallId: string;
-  output: Promise<string> | string;
+  tool_call_id: string;
+  output: string;
 };
 
 interface Assistant {
@@ -167,24 +166,30 @@ interface Assistant {
 
 class AssistantClient {
   private assistantId: string;
-  private functions: Record<string, (...args: any[]) => string>;
+  private functions: Record<string, (...args: any[]) => Promise<string>>;
   private currThreadId: string | null;
   private openaiClient: OpenAI;
 
-  constructor(assistant: Assistant | string) {
+  constructor(assistant: Assistant | string, openAPIKey: string) {
+    console.log("KEY:", openAPIKey);
     this.assistantId = typeof assistant === "string" ? assistant : assistant.id;
     this.functions = {};
     this.currThreadId = null;
-    this.openaiClient = new OpenAI(); // Assuming a constructor for OpenAI
+    this.openaiClient = new OpenAI({
+      apiKey: `${openAPIKey}`,
+    }); // Assuming a constructor for OpenAI
   }
 
-  addFunction(func: (...args: any[]) => string): void {
-    this.functions[func.name] = func;
+  addFunction(func: (...args: any[]) => Promise<string> | string): void {
+    this.functions[func.name] = (...args: any[]) => {
+      const result = func(...args);
+      return result instanceof Promise ? result : Promise.resolve(result);
+    };
   }
 
-  newThread(): void {
+  async newThread(): Promise<void> {
     //This redline might just be ts error
-    const thread: Thread = this.openaiClient.beta.threads.create();
+    const thread: Thread = await this.openaiClient.beta.threads.create();
     this.currThreadId = thread.id;
   }
 
@@ -201,28 +206,28 @@ class AssistantClient {
 
     let thread: Thread;
     if (this.currThreadId !== null) {
-      thread = this.openaiClient.beta.threads.retrieve(this.currThreadId);
+      thread = await this.openaiClient.beta.threads.retrieve(this.currThreadId);
     } else {
-      thread = this.openaiClient.beta.threads.create();
+      thread = await this.openaiClient.beta.threads.create();
       this.currThreadId = thread.id;
     }
+    console.log(`No thread found. Creating new thread for assistant ${this.assistantId}...`);
 
     // Send message
-    const messageObj: Messages = this.openaiClient.beta.threads.messages.create(thread.id, {
+    await this.openaiClient.beta.threads.messages.create(thread.id, {
       content: message,
       role: "user",
-      //   threadId: thread.id,
     });
 
     // Begin running the assistant on the thread to generate a response
-    let run = this.openaiClient.beta.threads.runs.create(thread.id, {
+    let run: Run = await this.openaiClient.beta.threads.runs.create(thread.id, {
       assistant_id: this.assistantId,
     });
 
     // Wait for the assistant to respond
     while (run.status !== "completed") {
       await new Promise((resolve) => setTimeout(resolve, 250));
-      run = this.openaiClient.beta.threads.runs.retrieve(thread.id, run.id);
+      run = await this.openaiClient.beta.threads.runs.retrieve(thread.id, run.id);
 
       if (["cancelled", "failed", "expired"].includes(run.status)) {
         throw new Error(
@@ -234,21 +239,23 @@ class AssistantClient {
 
       if (run.status === "requires_action") {
         console.log(`Assistant ${this.assistantId} requires action. Calling functions...`);
-        const toolCalls = run.required_action.submit_tool_outputs.tool_calls;
+        const toolCalls = run.required_action?.submit_tool_outputs.tool_calls;
+        if (toolCalls === undefined) throw new Error("Tool calls undefined");
 
         const toolOutputs: ToolResponse[] = [];
+        const toolOutputsPromises: Array<Promise<string>> = [];
 
         for (const toolCall of toolCalls) {
           const toolOutputObj: ToolResponse = {
             output: "",
-            toolCallId: toolCall.id,
+            tool_call_id: toolCall.id,
           };
 
           if (toolCall.function.name in this.functions) {
             const args = JSON.parse(toolCall.function.arguments);
             console.log(`Calling ${toolCall.function.name} with args ${args}...`);
 
-            toolOutputObj.output = this.functions[toolCall.function.name](...args);
+            toolOutputsPromises.push(this.functions[toolCall.function.name](...args));
           } else {
             throw new Error(`Assistant ${this.assistantId} requested unknown function ${toolCall.function.name}`);
           }
@@ -256,28 +263,28 @@ class AssistantClient {
           toolOutputs.push(toolOutputObj);
         }
 
-        // Resolve coroutine outputs
-        const coroutineIdxs = toolOutputs
-          .map((output, idx) => (output.output instanceof Promise ? idx : -1))
-          .filter((idx) => idx !== -1);
-        const coroutineResults = await Promise.all(coroutineIdxs.map((idx) => toolOutputs[idx].output));
-        coroutineIdxs.forEach((idx, i) => {
-          toolOutputs[idx].output = coroutineResults[i];
+        // Wait for tool outputs to resolve
+        const toolOutputsResults = await Promise.all(toolOutputsPromises);
+        toolOutputsResults.forEach((output, idx) => {
+          toolOutputs[idx].output = output;
         });
 
         // Submit tool outputs
-        run = this.openaiClient.beta.threads.runs.submitToolOutputs(thread.id, run.id, {
-          tool_outputs = toolOutputs,
+        run = await this.openaiClient.beta.threads.runs.submitToolOutputs(thread.id, run.id, {
+          tool_outputs: toolOutputs,
         });
 
         console.log(`Tool outputs submitted. Waiting for assistant ${this.assistantId} to respond...`);
       }
     }
 
-    const messages = this.openaiClient.beta.threads.messages.list(thread.id);
+    const messages = await this.openaiClient.beta.threads.messages.list(thread.id);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return messages.data[0].content[0].text.value;
+    if (messages.data[0].content[0].type !== "text") {
+      return `Invalid response type ${messages.data[0].content[0].type} from assistant ${this.assistantId}`;
+    } else {
+      return messages.data[0].content[0].text.value;
+    }
   }
 }
 

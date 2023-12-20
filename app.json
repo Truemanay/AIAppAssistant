@@ -7,6 +7,9 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "extra": {
+      "OPENAI_API_KEY":"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"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

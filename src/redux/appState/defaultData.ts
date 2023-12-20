@@ -3,6 +3,7 @@ import { tAppState } from "./types";
 
 const kDefaultAppState: tAppState = {
   rCurrentScreen: "home screen",
+  rFinalMessage: "",
   rFocusName: false,
   rFocusPassword: false,
   rIsThinking: false,

@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { aNav, submitDataTest } from "../redux/appState/thunkActions";
+import { aNav } from "../redux/appState/thunkActions";
 import { useDispatch } from "../redux";
 import { useCallback } from "react";
 
@@ -7,10 +7,7 @@ export default function Home() {
   const dispatch = useDispatch();
 
   const aNavtoScreen1 = useCallback(() => {
-    submitDataTest("", "").catch((err) => {
-      console.log(err);
-    });
-    // dispatch(aNav("/screen1"));
+    dispatch(aNav("/screen1"));
   }, [dispatch]);
 
   const aNavtoScreen2 = useCallback(() => {

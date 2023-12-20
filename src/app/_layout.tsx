@@ -25,6 +25,7 @@ const App = () => {
   const rStartX = useSuperSelector((state) => state.AppReducer.rStartX);
   const rStartY = useSuperSelector((state) => state.AppReducer.rStartY);
   const rIsThinking = useSuperSelector((state) => state.AppReducer.rIsThinking);
+  const rFinalMessage = useSuperSelector((state) => state.AppReducer.rFinalMessage);
   const aPathName = usePathname();
   const [goal, setGoal] = useState("");
 
@@ -173,6 +174,8 @@ const App = () => {
           )}
         </TouchableOpacity>
       </Animated.View>
+
+      {rFinalMessage !== "" && <Text style={styles.message}>{rFinalMessage}</Text>}
     </SafeAreaView>
   );
 };
@@ -202,6 +205,13 @@ const styles = StyleSheet.create({
     height: 20,
     position: "absolute",
     width: 20,
+  },
+  message: {
+    alignSelf: "center",
+    bottom: 50,
+    color: "white",
+    marginHorizontal: 20,
+    position: "absolute",
   },
   overlay: {
     alignItems: "center",

@@ -20,6 +20,9 @@ export const AppReducer = produce((state: tAppState = getDefaultAppState(), acti
     case "SET_THINKING_STATE":
       state.rIsThinking = action.rIsThinking;
       break;
+    case "SET_FINAL_MESSAGE":
+      state.rFinalMessage = action.rFinalMessage;
+      break;
   }
   return state;
 });

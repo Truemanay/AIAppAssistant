@@ -60,6 +60,13 @@
             ReferencedContainer = "container:AiApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "OPENAI_API_KEY"
+            value = "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"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

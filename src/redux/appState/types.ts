@@ -15,6 +15,7 @@ export type tAppState = {
   rStartY: number;
   rStartX: number;
   rIsThinking: boolean;
+  rFinalMessage: string;
 };
 
 export type tAppStateImmutable = RecursiveReadonly<tAppState>;
@@ -38,5 +39,9 @@ export type tSetThinkingState = {
   type: "SET_THINKING_STATE";
   rIsThinking: boolean;
 };
+export type tSetFinalMessageState = {
+  type: "SET_FINAL_MESSAGE";
+  rFinalMessage: string;
+};
 
-export type tAppAction = tSetAnimState | tSetAppState | tSetThinkingState;
+export type tAppAction = tSetAnimState | tSetAppState | tSetFinalMessageState | tSetThinkingState;

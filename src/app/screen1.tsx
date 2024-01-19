@@ -1,8 +1,10 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView, StyleSheet, Text } from "react-native";
 import { useSuperSelector } from "../util/customComparators";
 import { useDispatch } from "../redux";
 import { useCallback } from "react";
-import { _callFunction, _goBack } from "../functions";
+import { _goBack } from "../functions";
+import { AIPressable } from "../components/AIPressable";
+
 
 export default function Screen1() {
   const dispatch = useDispatch();
@@ -14,9 +16,9 @@ export default function Screen1() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.textWhite}>You are {rLoggedIn ? "Logged in" : "Logged out"}</Text>
-      <TouchableOpacity style={styles.button} onPress={_login}>
+      <AIPressable accessible accessibilityLabel="Login" style={styles.button} onPress={_login}>
         <Text style={styles.text}>{rLoggedIn ? "Logout" : "Login"}</Text>
-      </TouchableOpacity>
+      </AIPressable>
     </SafeAreaView>
   );
 }

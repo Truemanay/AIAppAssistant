@@ -3,6 +3,7 @@
  */
 import type { Dispatch } from "react";
 import { tAppAction, tAppState } from "./appState/types";
+import { tAppStructureAction, tAppStructureState } from "./appStructure/types";
 
 /**
  * ReduxDispatch
@@ -10,10 +11,11 @@ import { tAppAction, tAppState } from "./appState/types";
  */
 export type tDispatchAction =
   | tAppAction
+  | tAppStructureAction
   | {
       // Note:  This message will appear from typescript when it can't find a matching "type" key.
       // Added just so it's easier to find why typescript hates you again!  hahaha
-      type: "tDispatchAction doesn't have that key in src/redux/index.ts";
+      type: "tDispatchAction doesn't have that key in ../redux/index.ts";
     }; // import and add enumeration of actions and thunk actions here i.e. tAction1 | tThunkAction1 | ...
 
 export type tThunkDispatch = (
@@ -26,6 +28,7 @@ export type tThunkDispatch = (
  */
 export interface tReduxState {
   AppReducer: tAppState;
+  AppStructureReducer: tAppStructureState;
   _persist: { version: number; rehydrated: boolean };
 }
 

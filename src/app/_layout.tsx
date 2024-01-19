@@ -16,7 +16,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { Flint } from "../util/components/Flint";
+import { Flint } from "../components/Flint";
+import { AIPressable } from "src/components/AIPressable";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,14 +27,16 @@ const App = () => {
   const rStartY = useSuperSelector((state) => state.AppReducer.rStartY);
   const rIsThinking = useSuperSelector((state) => state.AppReducer.rIsThinking);
   const rFinalMessage = useSuperSelector((state) => state.AppReducer.rFinalMessage);
+  const AppStructureReducer = useSuperSelector((state) => state.AppStructureReducer.screens);
   const aPathName = usePathname();
   const [goal, setGoal] = useState("");
 
   const _handleSubmitData = useCallback(() => {
-    submitData({ goal: goal, state: rAppStates }, dispatch).catch((err) => {
+    // console.log("SCREENS:", AppStructureReducer);
+    submitData(AppStructureReducer, { goal: goal, state: rAppStates }, dispatch).catch((err) => {
       console.log(err);
     });
-  }, [dispatch, goal, rAppStates]);
+  }, [AppStructureReducer, dispatch, goal, rAppStates]);
   const _handleGoBack = useCallback(() => {
     dispatch(aNav("/"));
   }, [dispatch]);
@@ -152,9 +155,9 @@ const App = () => {
           <Text style={styles.text}>Test</Text>
         </TouchableOpacity> */}
         {aPathName !== "/" && (
-          <TouchableOpacity onPress={_handleGoBack} style={styles.button}>
+          <AIPressable accessible accessibilityLabel="Go back" onPress={_handleGoBack} style={styles.button}>
             <Text style={styles.text}>Back</Text>
-          </TouchableOpacity>
+          </AIPressable>
         )}
         <TextInput onChangeText={setGoal} style={styles.textInput} />
         <TouchableOpacity onPress={_handleSubmitData} style={styles.button}>

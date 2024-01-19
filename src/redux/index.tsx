@@ -18,10 +18,12 @@ import type { tDispatchAction, tThunkDispatch } from "./types";
  * file in this folder!
  */
 import { AppReducer } from "./appState/reducer";
+import { AppStructureReducer } from "./appStructure/reducer";
 
 // /** *** */
 const RootReducer = combineReducers({
   AppReducer,
+  AppStructureReducer,
 });
 
 /**

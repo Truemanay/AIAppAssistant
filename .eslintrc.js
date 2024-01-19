@@ -180,7 +180,7 @@ module.exports = {
         object: true,
       },
     ],
-    "prettier/prettier": "error",
+    "prettier/prettier": "off",
     "promise/always-return": "off",
     "promise/no-nesting": "error",
     // Checks rules of Hooks

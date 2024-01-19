@@ -52,7 +52,7 @@ export const aNav = (myScreen: string): tThunkDispatch => {
         screenName = "home screen";
         break;
     }
-    console.log("screenName:", screenName);
+    // console.log("screenName:", screenName);
     // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
     dispatch({ rCurrentScreen: screenName, type: "SET_APP_STATE" });
     router.push(myScreen);
@@ -60,6 +60,7 @@ export const aNav = (myScreen: string): tThunkDispatch => {
 };
 
 export const submitData = async (
+  appStructureData: any,
   data: { goal: string; state: tAppState },
   dispatch: any,
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
@@ -68,7 +69,12 @@ export const submitData = async (
     dispatch({ rIsThinking: true, type: "SET_THINKING_STATE" });
 
     ///AI
-    const fuzzy = new AssistantClient("asst_wBJVX5tBztDMg1mGEssYLyow");
+    const fuzzy = new AssistantClient("test");
+    // const appStructureAiss = new AssistantClient("Call correct assistant");
+    // const appStructure = await appStructureAiss.call(JSON.stringify(appStructureData));
+
+    // const appStructureCall = await appStructure.call(JSON.stringify(data));
+
     const execute_action = async (screen: string, action: string) => {
       const rAppState = store.getState().AppReducer;
       console.log("CURRENT STATE: ", rAppState);
@@ -85,7 +91,8 @@ export const submitData = async (
       }
     };
     fuzzy.addFunction(execute_action);
-    const assistantCall = await fuzzy.call(JSON.stringify(data));
+    // const assistantCall = await fuzzy.call(`${appStructure} \n${JSON.stringify(data)}`);
+    const assistantCall = await fuzzy.call(`${JSON.stringify(data)}`);
     ///END
     console.log("assistantCall: ", assistantCall);
     dispatch({ rFinalMessage: assistantCall, type: "SET_FINAL_MESSAGE" });

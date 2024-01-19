@@ -7,6 +7,7 @@ import { Run } from "openai/resources/beta/threads/runs/runs";
 import { Thread } from "openai/resources/beta/threads/threads";
 import { tAppState } from "./redux/appState/types";
 import { ThreadMessagesPage } from "openai/resources/beta/threads/messages/messages";
+import { findRecordByAction } from "../module/recordStore";
 
 export const fetchData = async (): Promise<string | undefined> => {
   try {
@@ -20,7 +21,7 @@ export const fetchData = async (): Promise<string | undefined> => {
   }
 };
 
-export const _goBack = async (dispatch: (arg0: tThunkDispatch) => void) => {
+export const _goBack = async (dispatch: (arg0: tThunkDispatch) => void, action: string) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       store.dispatch({ rFocusName: false, type: "SET_APP_STATE" });
@@ -28,7 +29,12 @@ export const _goBack = async (dispatch: (arg0: tThunkDispatch) => void) => {
       dispatch(aNav("/"));
       resolve();
     }, 1200);
-    _animateFuzzy(5, 80);
+    const myPath = findRecordByAction(action);
+    if (myPath !== undefined) {
+      const { x } = myPath;
+      const { y } = myPath;
+      _animateFuzzy(x, y);
+    }
   });
 };
 
@@ -39,58 +45,89 @@ export const _animateFuzzy = (endX: number, endY: number) => {
     store.dispatch({ rStartAnimation: false, rStartX: endX, rStartY: endY, type: "SET_ANIM_STATE" });
   }, 999);
 };
-export const _login = async () => {
+export const _login = async (action: string) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       store.dispatch({ rLoggedIn: true, type: "SET_APP_STATE" });
       resolve();
     }, 1200);
-    _animateFuzzy(170, 225);
+
+    const myPath = findRecordByAction(action);
+    if (myPath !== undefined) {
+      const { x } = myPath;
+      const { y } = myPath;
+      _animateFuzzy(x, y);
+    }
   });
 };
-export const _logOut = async () => {
+export const _logOut = async (action: string) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       store.dispatch({ rLoggedIn: false, type: "SET_APP_STATE" });
       resolve();
     }, 1200);
-    _animateFuzzy(170, 225);
+    const myPath = findRecordByAction(action);
+    if (myPath !== undefined) {
+      const { x } = myPath;
+      const { y } = myPath;
+      _animateFuzzy(x, y);
+    }
   });
 };
-export const _focusName = async () => {
+export const _focusName = async (action: string) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       store.dispatch({ rFocusName: true, type: "SET_APP_STATE" });
       resolve();
     }, 1200);
-    _animateFuzzy(335, 190);
+    const myPath = findRecordByAction(action);
+    if (myPath !== undefined) {
+      const { x } = myPath;
+      const { y } = myPath;
+      _animateFuzzy(x, y);
+    }
   });
 };
-export const _focusPassword = async () => {
+export const _focusPassword = async (action: string) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       store.dispatch({ rFocusPassword: true, type: "SET_APP_STATE" });
       resolve();
     }, 1200);
-    _animateFuzzy(340, 245);
+    const myPath = findRecordByAction(action);
+    if (myPath !== undefined) {
+      const { x } = myPath;
+      const { y } = myPath;
+      _animateFuzzy(x, y);
+    }
   });
 };
-export const _navtoScreen1 = async (dispatch: (arg0: tThunkDispatch) => void) => {
+export const _navtoScreen1 = async (dispatch: (arg0: tThunkDispatch) => void, action: string) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       dispatch(aNav("/screen1"));
       resolve();
     }, 1200);
-    _animateFuzzy(100, 210);
+    const myPath = findRecordByAction(action);
+    if (myPath !== undefined) {
+      const { x } = myPath;
+      const { y } = myPath;
+      _animateFuzzy(x, y);
+    }
   });
 };
-export const _navtoScreen2 = async (dispatch: (arg0: tThunkDispatch) => void) => {
+export const _navtoScreen2 = async (dispatch: (arg0: tThunkDispatch) => void, action: string) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       dispatch(aNav("/screen2"));
       resolve();
     }, 1200);
-    _animateFuzzy(260, 215);
+    const myPath = findRecordByAction(action);
+    if (myPath !== undefined) {
+      const { x } = myPath;
+      const { y } = myPath;
+      _animateFuzzy(x, y);
+    }
   });
 };
 
@@ -116,10 +153,10 @@ export const executeInAppAction = async (
     case "home screen":
       if (action === "login screen") {
         // state.rCurrentScreen = "login screen";
-        await _navtoScreen1(dispatch);
+        await _navtoScreen1(dispatch, action);
       } else if (action === "settings screen") {
         // state.rCurrentScreen = "settings screen";
-        await _navtoScreen2(dispatch);
+        await _navtoScreen2(dispatch, action);
       } else {
         return invalidAction(screen, action);
       }
@@ -127,13 +164,13 @@ export const executeInAppAction = async (
     case "login screen":
       if (action === "Go back") {
         // state.rCurrentScreen = "home screen";
-        await _goBack(dispatch);
+        await _goBack(dispatch, action);
       } else if (action === "Login" && !state.rLoggedIn) {
         // state.rLoggedIn = true;
-        await _login();
+        await _login(action);
       } else if (action === "Logout" && state.rLoggedIn) {
         // state.rLoggedIn = false;
-        await _logOut();
+        await _logOut("login");
       } else {
         return invalidAction(screen, action);
       }
@@ -143,14 +180,14 @@ export const executeInAppAction = async (
         // state.rCurrentScreen = "home screen";
         // state.rFocusName = false;
         // state.rFocusPassword = false;
-        await _goBack(dispatch);
+        await _goBack(dispatch, action);
       } else if (action === "Change username" && state.rLoggedIn) {
         // state.rFocusName = true;
         console.log("FOCUS NAME");
-        await _focusName();
+        await _focusName(action);
       } else if (action === "Change password" && state.rLoggedIn) {
         // state.rFocusPassword = true;
-        await _focusPassword();
+        await _focusPassword(action);
       } else {
         return invalidAction(screen, action);
       }
@@ -177,7 +214,7 @@ interface Assistant {
   retrieval: boolean;
 }
 
-const myOpenAIKey = "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";
+const myOpenAIKey = "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";
 
 class AssistantClient {
   private assistantId: string;

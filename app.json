@@ -8,7 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "extra": {
-      "OPENAI_API_KEY":"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"
+      "OPENAI_API_KEY": "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"
     },
     "splash": {
       "image": "./assets/splash.png",
@@ -33,6 +33,9 @@
     },
     "plugins": [
       "expo-router"
-    ]
-  }
+    ],
+    "sdkVersion": "49.0.0",
+    "entryPoint": ".vscode/exponentIndex.js"
+  },
+  "name": "aiapp"
 }

@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
-        "immer"
+        "immer",
+        "Interactable",
+        "Pressable"
     ],
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
     "editor.formatOnSave": true

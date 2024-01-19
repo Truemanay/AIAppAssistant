@@ -12,14 +12,18 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+    // "target": "es6", 
+    // "module": "commonjs", 
+    // "strict": true, 
+    // "esModuleInterop": true
     "target": "ES6",
     "importHelpers": true,
     "experimentalDecorators": true,
-    "module": "ESNext",
+    "module": "commonjs",
     "lib": [
       "dom",
       "dom.iterable",
-      "ESNext"
+      "ESNext",
     ],
     "allowJs": true,
     "jsx": "react-native",

@@ -1,4 +1,4 @@
-import RNFS from "react-native-fs";
+import * as fs from "expo-file-system";
 
 export interface RecordItem {
   action: string;
@@ -22,20 +22,22 @@ export const saveOrUpdateRecordItem = (item: RecordItem): void => {
     record.push(item);
   }
 
-  writeRecordToFile();
+  writeRecordToFile().catch((err) => {
+    console.error("Error saving record to file:", err);
+  });
 };
 
 export const findRecordByAction = (actionToMatch: string): RecordItem | undefined => {
   return record.find((item) => item.action === actionToMatch);
 };
 
-const writeRecordToFile = (): void => {
-  const path = RNFS.DocumentDirectoryPath + "/record.json";
-  RNFS.writeFile(path, JSON.stringify(record, null, 2))
-    .then(() => {
-      console.log("Record saved to", path);
-    })
-    .catch((err) => {
-      console.error("Error writing the record to file:", err);
-    });
+const writeRecordToFile = async (): Promise<void> => {
+  const path = fs.documentDirectory + "record.json";
+
+  try {
+    await fs.writeAsStringAsync(path, JSON.stringify(record, null, 2));
+    console.log("Record saved to", path);
+  } catch (err) {
+    console.error("Error writing the record to file:", err);
+  }
 };

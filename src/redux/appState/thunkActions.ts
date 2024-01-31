@@ -69,7 +69,7 @@ export const submitData = async (
     dispatch({ rIsThinking: true, type: "SET_THINKING_STATE" });
 
     ///AI
-    const fuzzy = new AssistantClient("test");
+    const fuzzy = new AssistantClient("asst_wBJVX5tBztDMg1mGEssYLyow");
     // const appStructureAiss = new AssistantClient("Call correct assistant");
     // const appStructure = await appStructureAiss.call(JSON.stringify(appStructureData));
 

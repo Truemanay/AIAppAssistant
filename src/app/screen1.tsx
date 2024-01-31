@@ -16,7 +16,7 @@ export default function Screen1() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.textWhite}>You are {rLoggedIn ? "Logged in" : "Logged out"}</Text>
-      <AIPressable accessible accessibilityLabel="Login" style={styles.button} onPress={_login}>
+      <AIPressable currentState={rLoggedIn} accessible accessibilityLabel="Login" style={styles.button} onPress={_login}>
         <Text style={styles.text}>{rLoggedIn ? "Logout" : "Login"}</Text>
       </AIPressable>
     </SafeAreaView>

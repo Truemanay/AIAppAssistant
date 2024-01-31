@@ -7,7 +7,6 @@ import { aNav, submitData } from "../redux/appState/thunkActions";
 import { _goBack, _login } from "../functions";
 import Animated, {
   Easing,
-  ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -17,7 +16,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Flint } from "../components/Flint";
-import { AIPressable } from "src/components/AIPressable";
+import { AIPressable } from "../components/AIPressable";
+// import { useSegments } from 'expo-router'
 
 const App = () => {
   const dispatch = useDispatch();
@@ -27,9 +27,22 @@ const App = () => {
   const rStartY = useSuperSelector((state) => state.AppReducer.rStartY);
   const rIsThinking = useSuperSelector((state) => state.AppReducer.rIsThinking);
   const rFinalMessage = useSuperSelector((state) => state.AppReducer.rFinalMessage);
+  const rCurrentScreen = useSuperSelector((state) => state.AppReducer.rCurrentScreen);
   const AppStructureReducer = useSuperSelector((state) => state.AppStructureReducer.screens);
   const aPathName = usePathname();
   const [goal, setGoal] = useState("");
+
+  // const segments = useSegments()
+
+  // useEffect(() => {
+  //   console.log("SEGMENTS:", segments);
+  //   const myPath: tUserPath = {
+  //     actionName: accessibilityLabel,
+  //     newState: currentState,
+  //     oldState: previousValue,
+  //   }
+  //   updateUserPath(myPath);
+  // }, [segments])
 
   const _handleSubmitData = useCallback(() => {
     // console.log("SCREENS:", AppStructureReducer);
@@ -57,12 +70,10 @@ const App = () => {
       positionX.value = withTiming(rStartX, {
         duration: 1000,
         easing: Easing.inOut(Easing.cubic),
-        reduceMotion: ReduceMotion.System,
       });
       positionY.value = withTiming(rStartY, {
         duration: 1000,
         easing: Easing.inOut(Easing.cubic),
-        reduceMotion: ReduceMotion.System,
       });
       setTimeout(() => {
         _handleScale();
@@ -74,12 +85,10 @@ const App = () => {
     positionX.value = withTiming(300, {
       duration: 1000,
       easing: Easing.inOut(Easing.cubic),
-      reduceMotion: ReduceMotion.System,
     });
     positionY.value = withTiming(300, {
       duration: 1000,
       easing: Easing.inOut(Easing.cubic),
-      reduceMotion: ReduceMotion.System,
     });
   }, [positionX, positionY]);
   const opacity1 = useSharedValue(0);
@@ -155,7 +164,7 @@ const App = () => {
           <Text style={styles.text}>Test</Text>
         </TouchableOpacity> */}
         {aPathName !== "/" && (
-          <AIPressable accessible accessibilityLabel="Go back" onPress={_handleGoBack} style={styles.button}>
+          <AIPressable currentState={rCurrentScreen} accessible accessibilityLabel="Go back" onPress={_handleGoBack} style={styles.button}>
             <Text style={styles.text}>Back</Text>
           </AIPressable>
         )}

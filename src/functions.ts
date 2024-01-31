@@ -7,7 +7,7 @@ import { Run } from "openai/resources/beta/threads/runs/runs";
 import { Thread } from "openai/resources/beta/threads/threads";
 import { tAppState } from "./redux/appState/types";
 import { ThreadMessagesPage } from "openai/resources/beta/threads/messages/messages";
-import { findRecordByAction } from "../module/recordStore";
+import { findRecordByAction } from "../module/appStructure/recordStore";
 
 export const fetchData = async (): Promise<string | undefined> => {
   try {
@@ -214,7 +214,7 @@ interface Assistant {
   retrieval: boolean;
 }
 
-const myOpenAIKey = "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";
+const myOpenAIKey = "";
 
 class AssistantClient {
   private assistantId: string;
@@ -261,6 +261,7 @@ class AssistantClient {
       throw new Error("There was a problem creating a new thread");
     }
     console.log(`New thread created: ${thread}`);
+    console.log(`New thread created Test: `, JSON.stringify(thread));
     this.currThreadId = thread.id;
   }
 
@@ -316,6 +317,7 @@ class AssistantClient {
         throw new Error("There was a problem creating a new thread");
       }
       console.log(`New thread created: ${thread}`);
+      console.log(`New thread created: `, JSON.stringify(thread));
       this.currThreadId = thread.id;
     }
 

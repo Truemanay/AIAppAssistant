@@ -40,14 +40,14 @@ export default function Screen2() {
       <View style={styles.innerContainer2}>
         <Text style={styles.text}>{`Name:`}</Text>
         <TextInput placeholder={rName} ref={aNameRef} onChangeText={setName} style={styles.textInput} />
-        <AIPressable accessible accessibilityLabel="Change username" style={styles.button} onPress={_changeName}>
+        <AIPressable currentState={rName} accessible accessibilityLabel="Change username" style={styles.button} onPress={_changeName}>
           <Text style={styles.text2}>Edit</Text>
         </AIPressable>
       </View>
       <View style={styles.innerContainer2}>
         <Text style={styles.text}>{`Password: `}</Text>
         <TextInput placeholder={rPassword} ref={aPasswordRef} style={styles.textInput} onChangeText={setPassword} />
-        <AIPressable accessible accessibilityLabel="Change password" style={styles.button} onPress={_changePassword}>
+        <AIPressable currentState={rPassword} accessible accessibilityLabel="Change password" style={styles.button} onPress={_changePassword}>
           <Text style={styles.text2}>Edit</Text>
         </AIPressable>
       </View>

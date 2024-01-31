@@ -1,5 +1,5 @@
 searchParameters:
-  projectPath: '../src/app/'
+  projectPath: '../../src/app'
   nodeTypes:
     - 'TextInput'
     - 'Pressable'

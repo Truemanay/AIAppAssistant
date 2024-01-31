@@ -1,10 +1,13 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { aNav } from "../redux/appState/thunkActions";
 import { useDispatch } from "../redux";
 import { useCallback } from "react";
+import { AIPressable } from "../../src/components/AIPressable";
+import { useSuperSelector } from "../util/customComparators";
 
 export default function Home() {
   const dispatch = useDispatch();
+  const rCurrentScreen = useSuperSelector((state) => state.AppReducer.rCurrentScreen);
 
   const aNavtoScreen1 = useCallback(() => {
     dispatch(aNav("/screen1"));
@@ -27,12 +30,12 @@ export default function Home() {
         <Text style={styles.textWhite}>Home</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={aNavtoScreen1}>
+        <AIPressable currentState={rCurrentScreen} accessible accessibilityLabel="login screen" style={styles.button} onPress={aNavtoScreen1}>
           <Text style={styles.text}>Go to login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={aNavtoScreen2}>
+        </AIPressable>
+        <AIPressable currentState={rCurrentScreen} accessible accessibilityLabel="settings screen" style={styles.button} onPress={aNavtoScreen2}>
           <Text style={styles.text}>Go Settings</Text>
-        </TouchableOpacity>
+        </AIPressable>
       </View>
     </SafeAreaView>
   );

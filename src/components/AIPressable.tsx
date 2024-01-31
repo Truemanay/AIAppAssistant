@@ -1,28 +1,53 @@
-import { record, saveOrUpdateRecordItem } from '../../module/recordStore';
-import React, { useCallback, useRef } from 'react';
+import { record, saveOrUpdateRecordItem } from '../../module/appStructure/recordStore';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import { _animateFuzzy } from '../functions';
+import { updateUserPath } from '../../module/trackUser/storeUserPath';
+import { tUserPath } from '../../module/trackUser/whitelist';
 
-type XYPressableProps = PressableProps;
+type XYPressableProps = PressableProps & { currentState: any };
 
-export const AIPressable = ({ onPress, accessibilityLabel, ...props }: XYPressableProps) => {
-
+export const AIPressable = ({ onPress, accessibilityLabel, currentState, ...props }: XYPressableProps) => {
     const myRef = useRef(null);
+    // State to hold the previous value
+    const [previousValue, setPreviousValue] = useState<any>(currentState);
+    // State to determine if the button has been pressed
+    const [isPressed, setIsPressed] = useState<boolean>(false);
+
+    // Effect to update the previous value when `value` changes
+    useEffect(() => {
+        if (isPressed) {
+            setPreviousValue(currentState);
+            setIsPressed(false);
+
+            if (accessibilityLabel) {
+                console.log('CURRENT:', currentState);
+                console.log('PREV:', previousValue);
+                const myPath: tUserPath = {
+                    actionName: accessibilityLabel,
+                    newState: currentState,
+                    oldState: previousValue,
+                }
+                updateUserPath(myPath);
+            }
+        }
+    }, [accessibilityLabel, currentState, isPressed, previousValue]);
 
     const myOnPress = useCallback(() => {
         if (onPress) {
+            setIsPressed(true);
             // setTimeout(() => {
             onPress();
             // }, 1200);
             // const myRecord = record.find(item => item.action === accessibilityLabel);
             // _animateFuzzy(myRecord.x, myRecord.y);
         }
-    }, [onPress]);
+    }, [accessibilityLabel, currentState, onPress, previousValue]);
 
-    if (onPress && accessibilityLabel) {
+    // if (onPress && accessibilityLabel) {
 
-        console.log('onPress:', accessibilityLabel);
-    }
+    //     console.log('onPress:', accessibilityLabel);
+    // }
 
     const myOnLayout = useCallback(() => {
         if (myRef && myRef.current && accessibilityLabel) {
